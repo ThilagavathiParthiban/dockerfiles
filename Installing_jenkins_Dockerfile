@@ -1,0 +1,13 @@
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install -y wget apt-transport-https
+
+RUN wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+RUN echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list
+
+RUN apt-get update && \
+    apt-get install -y jenkins
+
+EXPOSE 8080
+CMD ["/usr/bin/java", "-jar", "/usr/share/jenkins/jenkins.war"]
