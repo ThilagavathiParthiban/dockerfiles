@@ -12,3 +12,39 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 CMD [ "npm", "start" ]
+
+
+#another docker file to install mern stack
+FROM ubuntu:20.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  curl \
+  gnupg \
+  git \
+  build-essential
+
+# Install MongoDB
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+RUN apt-get update && apt-get install -y \
+  mongodb-org
+
+# Install Node.js and npm
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+
+# Create a working directory and copy the application code
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+# Install the application dependencies
+RUN npm install
+
+# Expose the application port
+EXPOSE 3000
+
+# Run the application
+CMD ["npm", "start"]
+
